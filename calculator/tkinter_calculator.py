@@ -3,7 +3,7 @@
 from tkinter import *
 from enum import Enum
 import math
-import automata
+import automaton
 
 class Action(Enum):         #action enum
     add='+'
@@ -37,10 +37,11 @@ class Calculator:
 
 
         self.root = Tk()                                                                    #create the root and the main canvas
-        self.main_canvas = Canvas(self.root, bg="yellow", height=28 * 6, width=28 * 5)
+        self.main_canvas = Canvas(self.root, bg="yellow", height=28 * 6*2, width=28 * 5*2)
 
-        self.root.geometry("140x168")           #set the size of the window
+        self.root.geometry("280x338")           #set the size of the window
         self.root.resizable(0, 0)               #make the window size unchangeable
+        self.root.title('Calculator')             #change the window name
 
         self.set_label_canvas()                 #set the labels and buttons
         self.set_clear_button_canvas()
@@ -60,45 +61,45 @@ class Calculator:
             ('q2', ')'): 'q2'
         }
         F = ['q1', 'q2']
-        self.automaton_checker=automata.Automata(Q,Sigma,delta,q0='q0',F=F)
+        self.automaton_checker=automaton.Automaton(Q,Sigma,delta,q0='q0',F=F)
 
         self.main_canvas.pack()         #put the canvas on the window
         self.root.mainloop()            #start the window
 
 
     def set_button_canvas(self):
-        button_canvas = Canvas(self.main_canvas, bg="gray", height=28 * 4, width=28 * 3)        #create numbers button's canvas
+        button_canvas = Canvas(self.main_canvas, bg="gray", height=28 * 4*2, width=28 * 3*2)        #create numbers button's canvas
 
 
         # button .
         func=self.num_button_down_builder('.')
-        b = Button(button_canvas, text='.', command=func)
+        b = Button(button_canvas, text='.', command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        button_canvas.create_window(4 + 28 * 0, 3 + 3 * 28, anchor=NW, window=b)
+        button_canvas.create_window((4 + 28 * 0)*2, (3 + 3 * 28)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-.>", func)
 
         # button 0
         func = self.num_button_down_builder(0)
-        b = Button(button_canvas, text=str(0), command=func)
+        b = Button(button_canvas, text=str(0), command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        button_canvas.create_window(3 + 28 * 1, 3 + 3 * 28, anchor=NW, window=b)
+        button_canvas.create_window((3 + 28 * 1)*2, (3 + 3 * 28)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-0>", func)
 
 
         # button ans
-        b = Button(button_canvas, text='ans', command=self.ans_button_down)
-        b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        button_canvas.create_window(3 + 28 * 2, 3 + 3 * 28, anchor=NW, window=b)
+        b = Button(button_canvas, text='ans', command=self.ans_button_down,font=('',9*2))
+        b.configure(width=3, height=1, activebackground="#33B5E5", relief=RAISED)
+        button_canvas.create_window((28 * 2)*2, (3 + 3 * 28)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-a>", self.ans_button_down)
 
         for i in range(1, 10):  # buttons 1-9
             func = self.num_button_down_builder(i)
-            b = Button(button_canvas, text=str(i), command=func)
+            b = Button(button_canvas, text=str(i), command=func,font=('',9*2))
             b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-            button_canvas.create_window(4 + 28 * ((i - 1) % 3), 3 + int((9 - i) / 3) * 28, anchor=NW, window=b)
+            button_canvas.create_window((4 + 28 * ((i - 1) % 3))*2, (3 + int((9 - i) / 3) * 28)*2, anchor=NW, window=b)
             self.root.bind("<KeyPress-"+str(i)+">", func)
 
-        button_canvas.place(x=0, y=56)      #set this canvas on the main canvas
+        button_canvas.place(x=0, y=56*2)      #set this canvas on the main canvas
 
     #number button down func builder
     def num_button_down_builder(self,num):
@@ -111,66 +112,66 @@ class Calculator:
         self.apdate_equation_label(str(self.ans))
 
     def set_action_button_canvas(self):
-        action_button_canvas = Canvas(self.main_canvas, bg="orange", height=28*4, width=28*2)   #create action button's canvas
+        action_button_canvas = Canvas(self.main_canvas, bg="orange", height=28*4*2, width=28*2*2)   #create action button's canvas
 
         # button (
         func = self.parenthesis_button_down_builder(Parenthesis.left)
-        b = Button(action_button_canvas, text="(", command=func)
+        b = Button(action_button_canvas, text="(", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4,3, anchor=NW, window=b)
+        action_button_canvas.create_window(4*2,3*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-(>", func)
 
         # button )
         func = self.parenthesis_button_down_builder(Parenthesis.right)
-        b = Button(action_button_canvas, text=")", command=func)
+        b = Button(action_button_canvas, text=")", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4+28,3, anchor=NW, window=b)
+        action_button_canvas.create_window((4+28)*2,3*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-)>", func)
 
         # button +
         func=self.action_button_down_builder(Action.add)
-        b = Button(action_button_canvas, text="+", command=func)
+        b = Button(action_button_canvas, text="+", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4,3+28 *1, anchor=NW, window=b)
+        action_button_canvas.create_window(4*2,(3+28 *1)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-+>", func)
 
         # button -
         func = self.action_button_down_builder(Action.sub)
-        b = Button(action_button_canvas, text="-", command=func)
+        b = Button(action_button_canvas, text="-", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4+28,3+28 *1, anchor=NW, window=b)
+        action_button_canvas.create_window((4+28)*2,(3+28 *1)*2, anchor=NW, window=b)
         self.root.bind("<minus>", func)
 
         # button *
         func = self.action_button_down_builder(Action.mul)
-        b = Button(action_button_canvas, text="*", command=func)
+        b = Button(action_button_canvas, text="*", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4,3+28 *2, anchor=NW, window=b)
+        action_button_canvas.create_window(4*2,(3+28 *2)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-*>", func)
 
         # button /
         func = self.action_button_down_builder(Action.div)
-        b = Button(action_button_canvas, text="/", command=func)
+        b = Button(action_button_canvas, text="/", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4+28,3+28 *2, anchor=NW, window=b)
+        action_button_canvas.create_window((4+28)*2,(3+28 *2)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-/>", func)
 
         # button =
         func = self.eql_button_down
-        b = Button(action_button_canvas, text="=", command=func)
+        b = Button(action_button_canvas, text="=", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED,bg="gray")
-        action_button_canvas.create_window(4,3+28 *3, anchor=NW, window=b)
+        action_button_canvas.create_window(4*2,(3+28 *3)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-=>", func)
         self.root.bind("<Return>", func)
 
         # button ^
         func = self.action_button_down_builder(Action.pow)
-        b = Button(action_button_canvas, text="^", command=func)
+        b = Button(action_button_canvas, text="^", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        action_button_canvas.create_window(4+28,3+28 *3, anchor=NW, window=b)
+        action_button_canvas.create_window((4+28)*2,(3+28 *3)*2, anchor=NW, window=b)
         self.root.bind("<KeyPress-^>", func)
 
-        action_button_canvas.place(x=84, y=56)      #set this canvas on the main canvas
+        action_button_canvas.place(x=84*2, y=56*2)      #set this canvas on the main canvas
 
     #action button down func builder
     def action_button_down_builder(self,action):
@@ -248,9 +249,7 @@ class Calculator:
             i = 0
             while i != len(actions):        #calculate mul/sub actions
                 s[i + 1] = float(s[i + 1])
-                print(actions[i])
                 if (actions[i] == Action.mul):
-                    print(actions[i])
                     s[i] = s[i] * s[i + 1]
                     s.pop(i + 1)
                     actions.pop(i)
@@ -306,7 +305,11 @@ class Calculator:
             return
 
             #calculate
-        ans= main_solver(self.equation)
+        try:
+            ans= main_solver(self.equation)
+        except OverflowError:                   #for to big numbers
+            ans=False
+
         if(ans==False):
             self.rusolut_label.configure(text="Error")
             self.resat_equation_label()
@@ -319,29 +322,29 @@ class Calculator:
 
     #parenthesis button down func builder
     def parenthesis_button_down_builder(self, side):
-        def parenthesis_button_down():
+        def parenthesis_button_down(event=None):
             self.apdate_equation_label(side.value)
         return parenthesis_button_down
 
     #set clear and backspace buttons
     def set_clear_button_canvas(self):
-        clear_button_canvas = Canvas(self.main_canvas, bg="green", height=28*2, width=28)
+        clear_button_canvas = Canvas(self.main_canvas, bg="green", height=28*2*2, width=28*2)
 
         # button ace
         func = self.clear_button_down
-        b = Button(clear_button_canvas, text="ac", command=func)
+        b = Button(clear_button_canvas, text="ac", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        clear_button_canvas.create_window(4,3, anchor=NW, window=b)
+        clear_button_canvas.create_window(4*2,3*2, anchor=NW, window=b)
         self.root.bind("<Delete>", func)
 
         # button backspace
         func=self.del_button_down
-        b = Button(clear_button_canvas, text="del", command=func)
+        b = Button(clear_button_canvas, text="del", command=func,font=('',9*2))
         b.configure(width=2, height=1, activebackground="#33B5E5", relief=RAISED)
-        clear_button_canvas.create_window(4,3+28, anchor=NW, window=b)
+        clear_button_canvas.create_window(4*2,(3+28)*2, anchor=NW, window=b)
         self.root.bind("<BackSpace>", func)
 
-        clear_button_canvas.place(x=112, y=0)
+        clear_button_canvas.place(x=112*2, y=0)
 
     #clear button down
     def clear_button_down(self,event=None):
@@ -355,16 +358,16 @@ class Calculator:
 
     #set label canvas
     def set_label_canvas(self):
-        label_canvas = Canvas(self.main_canvas, bg="white", height=28*2, width=28*4)
+        label_canvas = Canvas(self.main_canvas, bg="white", height=28*2*2, width=28*4*2)
 
         #equation label
-        l = Label(label_canvas, text="0",fg="gray",bg="white")
-        label_canvas.create_window(3,5, anchor=NW, window=l)
+        l = Label(label_canvas, text="0",fg="gray",font=('',9*2),bg="white")
+        label_canvas.create_window(3*2,5*2, anchor=NW, window=l)
         self.equation_label=l
 
         #resolut label
-        l = Label(label_canvas, text="0",fg="black",bg="white",font=('',13),anchor='se')
-        label_canvas.create_window(28*3,5+38, window=l)
+        l = Label(label_canvas, text="0",fg="black",bg="white",font=('',13*2),anchor='se')
+        label_canvas.create_window((24*3)*2,(5+38)*2, window=l)
 
         self.rusolut_label = l
 
