@@ -30,7 +30,7 @@ def cpu_utilit(cap_input=0, frame_number=8, func=foo):
 
     # frame counter
     counter = -1
-
+    cpu = psutil.cpu_percent()
     while True:
 
         timer = cv2.getTickCount()
@@ -43,9 +43,8 @@ def cpu_utilit(cap_input=0, frame_number=8, func=foo):
         if not counter:
             img = func(img)
 
-        cpu = psutil.cpu_percent()
-        if cpu > 1:
-            print(counter, fps, cpu)
+        cpu=psutil.cpu_percent()
+        print(f"current frame: {counter}\t fps:{float('%.2f' % fps)}   \t cpu: {cpu}")
 
         add_texts(img, fps, counter, cpu)
         cv2.imshow("image", img)
@@ -54,4 +53,4 @@ def cpu_utilit(cap_input=0, frame_number=8, func=foo):
             break
 
 
-cpu_utilit(frame_number=10)
+cpu_utilit(frame_number=10,func=foo)
